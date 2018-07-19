@@ -8,15 +8,40 @@ body {
     margin: 0;
 }
 
+#background-1 {
+    position: absolute;
+    top: 0;
+    background: #5588FF;
+    height: 30vh;
+    width: 100vw;
+}
+
+#background-2 {
+    position: absolute;
+    top: 30vh;
+    background: #55DD66;
+    height: 70vh;
+    width: 100vw;
+}
+
+#score {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
 #display-message {
+    font-size: 200%;
+    font-weight: bold;
+    line-height: 100vh;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#overlay {
     position: absolute;
     top: 0;
     background: rgba(50, 50, 50, .3);
     width: 100vw;
-    font-size: 200%;
-    font-weight: bold;
     height: 100vh;
-    line-height: 100vh;
-    vertical-align: middle;
-    text-align: center;
 }

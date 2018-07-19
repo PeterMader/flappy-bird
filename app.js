@@ -1,6 +1,6 @@
 const PILLAR_WIDTH = 100;
-const PILLAR_SPACING = 200;
-const GAME_SPEED = .08;
+const PILLAR_SPACING = 400;
+const GAME_SPEED = .1;
 const BIRD_HEIGHT = 30;
 const BIRD_WIDTH = 30;
 const BIRD_OFFSET = 100;
@@ -8,10 +8,7 @@ const BIRD_OFFSET = 100;
 const draw = world => {
     const { canvas, ctx } = world;
 
-    ctx.fillStyle = '#5588FF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height * .3);
-    ctx.fillStyle = '#55FF66';
-    ctx.fillRect(0, canvas.height * .3, canvas.width, canvas.height * .7);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // draw the pillars
     ctx.fillStyle = '#774411';
@@ -35,10 +32,10 @@ const draw = world => {
         world.birdPosition + 20
     );
 
-    ctx.fillStyle = '#000000';
-    ctx.fillText(`Score: ${world.score}`, 10, canvas.height - 20);
+    world.scoreElement.textContent = `Score: ${world.score}`;
 
     if (!world.gameRunning) {
+        ctx.fillStyle = '#000000';
         ctx.fillText('Press Enter to start the game.', 10, 10);
     }
 };
@@ -77,7 +74,7 @@ const update = world => {
         p.push({
             position: width,
             offset: Math.round(Math.random() * height / 2),
-            opening: Math.round(Math.random() * (height - 200) / 2 + 100)
+            opening: Math.round(Math.random() * (height - 300) / 2 + 150)
         });
     }
 
@@ -97,10 +94,14 @@ const update = world => {
 
 const startGame = world => {
     world.message.style.display = 'none';
+    let i = 0;
 
     const tick = () => {
+        i++;
         update(world);
-        draw(world);
+        if (i % 2 === 0) {
+            draw(world);
+        }
 
         if (!world.gameRunning) {
             reset(world);
@@ -144,13 +145,15 @@ const reset = world => {
 const showGameOver = world => {
     const { message } = world;
     message.textContent = 'Uups!';
+    message.style.fontSize = '800%';
     message.style.display = 'block';
-    setTimeout(() => showTitle(world), 1000);
+    setTimeout(() => showTitle(world), 500);
 };
 
 const showTitle = world => {
     const { message } = world;
     message.textContent = 'Annas persönlicher Flappy-Bird-Klon';
+    message.style.fontSize = '200%';
     message.style.display = 'block';
 };
 
@@ -158,13 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('main-canvas');
     const ctx = canvas.getContext('2d');
     const message = document.getElementById('display-message');
+    const scoreElement = document.getElementById('score');
 
     const { innerWidth: width, innerHeight: height } = window;
 
     canvas.width = innerWidth;
     canvas.height = innerHeight;
 
-    const world = { canvas, ctx, message };
+    const world = { canvas, ctx, message, scoreElement };
     reset(world);
 
     document.addEventListener('keypress', onKeyPress(world));
