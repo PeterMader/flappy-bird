@@ -1,8 +1,8 @@
-const PILLAR_WIDTH = 50;
+const PILLAR_WIDTH = 100;
 const PILLAR_SPACING = 200;
-const GAME_SPEED = .05;
-const BIRD_HEIGHT = 10;
-const BIRD_WIDTH = 10;
+const GAME_SPEED = .08;
+const BIRD_HEIGHT = 30;
+const BIRD_WIDTH = 30;
 const BIRD_OFFSET = 100;
 
 const draw = world => {
@@ -20,7 +20,7 @@ const draw = world => {
             ctx.fillRect(position, 0, PILLAR_WIDTH, offset);
             const lowerPartY = offset + opening;
             ctx.fillRect(
-                position, lowerPartY, PILLAR_WIDTH, canvas.width - lowerPartY
+                position, lowerPartY, PILLAR_WIDTH, canvas.height - lowerPartY
             );
         }
     );
@@ -29,7 +29,11 @@ const draw = world => {
     ctx.fillStyle = '#FF0000';
     ctx.fillRect(BIRD_OFFSET, world.birdPosition, BIRD_WIDTH, BIRD_HEIGHT);
 
-    ctx.fillText('Anna, der plumpe Vogel', BIRD_OFFSET + 15, world.birdPosition + 5);
+    ctx.fillText(
+        'Anna, das flatternde Vögelchen',
+        BIRD_OFFSET + 35,
+        world.birdPosition + 20
+    );
 
     ctx.fillStyle = '#000000';
     ctx.fillText(`Score: ${world.score}`, 10, canvas.height - 20);
@@ -87,10 +91,13 @@ const update = world => {
         )
     ) {
         world.gameRunning = false;
+        showGameOver(world);
     }
 };
 
 const startGame = world => {
+    world.message.style.display = 'none';
+
     const tick = () => {
         update(world);
         draw(world);
@@ -114,6 +121,9 @@ const onKeyPress = world => e => {
     } else {
         if (e.key === 'Enter') {
             world.gameRunning = true;
+            world.time = Date.now();
+            world.birdVelocity = -.1;
+            world.age = 0;
             startGame(world);
         }
     }
@@ -122,7 +132,7 @@ const onKeyPress = world => e => {
 const reset = world => {
     Object.assign(world, {
         gameRunning: false,
-        birdPosition: 0,
+        birdPosition: 100,
         birdVelocity: 1,
         pillars: [],
         time: Date.now(),
@@ -131,16 +141,34 @@ const reset = world => {
     });
 };
 
+const showGameOver = world => {
+    const { message } = world;
+    message.textContent = 'Uups!';
+    message.style.display = 'block';
+    setTimeout(() => showTitle(world), 1000);
+};
+
+const showTitle = world => {
+    const { message } = world;
+    message.textContent = 'Annas persönlicher Flappy-Bird-Klon';
+    message.style.display = 'block';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('main-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 800;
-    canvas.height = 500;
+    const message = document.getElementById('display-message');
 
-    const world = { canvas, ctx };
+    const { innerWidth: width, innerHeight: height } = window;
+
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const world = { canvas, ctx, message };
     reset(world);
 
     document.addEventListener('keypress', onKeyPress(world));
 
     startGame(world);
+    showTitle(world);
 });

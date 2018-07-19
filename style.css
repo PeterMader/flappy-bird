@@ -1,0 +1,22 @@
+canvas {
+    position: absolute;
+    left: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#display-message {
+    position: absolute;
+    top: 0;
+    background: rgba(50, 50, 50, .3);
+    width: 100vw;
+    font-size: 200%;
+    font-weight: bold;
+    height: 100vh;
+    line-height: 100vh;
+    vertical-align: middle;
+    text-align: center;
+}
